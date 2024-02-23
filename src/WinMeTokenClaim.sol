@@ -1,8 +1,10 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.20;
 
-contract Counter {
+contract WinMeTokenClaim {
     uint256 public number;
+
+    mapping(address => bool) public approvedTokens;
 
     function setNumber(uint256 newNumber) public {
         number = newNumber;
