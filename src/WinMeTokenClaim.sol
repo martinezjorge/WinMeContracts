@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract WinMeTokenClaim is Ownable {
     uint256 public number;
-
+    using SafeERC20 for IERC20;
     mapping(address => bool) public approvedTokens;
 
     event TokenApproved(address indexed token, bool indexed approvedStatus);
@@ -18,5 +20,8 @@ contract WinMeTokenClaim is Ownable {
         approvedTokens[token] = !approvedTokens[token];
         emit TokenApproved(token, approvedTokens[token]);
     }
+
+    // TODO: Add function that allows a user to claim their tokens
+    function claimToken() external {}
 
 }
