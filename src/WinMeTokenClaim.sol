@@ -14,6 +14,14 @@ contract WinMeTokenClaim is Ownable {
 
     constructor() Ownable(msg.sender) {}
 
+    /// @notice Let players claim ERC20 tokens (requires pre-approval)
+    function claimTokenWithoutPermit() external {}
+
+    /// @notice Lets players claim ERC20 tokens (doesn't require pre-approval)
+    function claimTokenWithPermit() external {}
+
+    /* Admin Functions */
+
     /// @notice Allows the contract owner to toggle whether an address is a valid payment token for escrow
     /// @param token The address of the token to add or remove
     function togglePaymentToken(address token) external onlyOwner {
@@ -21,7 +29,10 @@ contract WinMeTokenClaim is Ownable {
         emit TokenApproved(token, approvedTokens[token]);
     }
 
-    // TODO: Add function that allows a user to claim their tokens
-    function claimToken() external {}
+    // TODO: Function to retrieve tokens stored in this contract
+    function withdrawTokens(address token, uint256 tokenAmount) external onlyOwner {}
+
+    /// @notice 
+    function relinquishOwnership() external {}
 
 }
