@@ -9,13 +9,14 @@ contract WinMeTokenClaim is Ownable {
     uint256 public number;
     using SafeERC20 for IERC20Permit;
     mapping(address => bool) public approvedTokens;
+    mapping(address => uint256) public winnings;
 
     event TokenApproved(address indexed token, bool indexed approvedStatus);
 
     constructor() Ownable(msg.sender) {}
 
-    /// @notice Let players claim ERC20 tokens (requires pre-approval)
-    function claimTokenWithoutPermit() external {}
+    /// @notice Allows users to pay game entry fee
+    function payGameEntranceFee() external {}
 
     /// @notice Lets players claim ERC20 tokens (doesn't require pre-approval)
     function claimTokenWithPermit() external {}
@@ -29,10 +30,9 @@ contract WinMeTokenClaim is Ownable {
         emit TokenApproved(token, approvedTokens[token]);
     }
 
-    // TODO: Function to retrieve tokens stored in this contract
-    function withdrawTokens(address token, uint256 tokenAmount) external onlyOwner {}
-
-    /// @notice 
-    function relinquishOwnership() external {}
-
+    // @notice Emergency function to withdraw stuck tokens
+    function withdrawStuckTokens(
+        address token,
+        uint256 tokenAmount
+    ) external onlyOwner {}
 }
