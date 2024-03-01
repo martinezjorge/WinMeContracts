@@ -29,6 +29,12 @@ contract WinMeStore is Ownable {
 
     mapping(IERC20 => TokenRegistry) paymentTokens;
 
+    event WinMeTokenPurchasedWithNetworkCurrency(
+        uint256 indexed currencyUsdPrice,
+        uint256 indexed currencyAmount,
+        uint256 indexed winMeTokenReceived
+    );
+
     constructor(
         address payable _treasuryAddress, 
         IWinMeToken _winMeTokenAddress, 
@@ -54,11 +60,12 @@ contract WinMeStore is Ownable {
         return price;
     }
 
-    function winMeTokenAmount(uint256 amountETH) public view returns (uint256) {
+    function winMeTokenAmount(uint256 currencyAmount) public returns (uint256) {
         //Sent amountETH, how many usd I have
         uint256 ethUsd = uint256(getChainlinkDataFeedLatestAnswer());       //with 8 decimal places
-        uint256 amountUSD = amountETH * ethUsd / 10E18; //ETH = 18 decimal places
+        uint256 amountUSD = currencyAmount * ethUsd / 10E18; //ETH = 18 decimal places
         uint256 amountToken = amountUSD / winMeTokenPrice * 10E18;  //8 decimal places from ETHUSD / 2 decimal places from token 
+        emit WinMeTokenPurchasedWithNetworkCurrency(ethUsd, currencyAmount, amountToken);
         return amountToken;
     }
 
