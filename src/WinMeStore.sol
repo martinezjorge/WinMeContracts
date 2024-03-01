@@ -19,8 +19,8 @@ contract WinMeStore is Ownable {
     uint256 networkCurrencyPrice;
 
     // 1 token = 2.00 usd, with 2 decimal places
-    uint256 public winMeTokenPrice = 200;
-    uint256 public winMeNftPrice = 1000;
+    uint256 public winMeTokenPrice = 2E8;
+    uint256 public winMeNftPrice = 10E8;
 
     struct TokenRegistry {
         uint256 decimals;
@@ -57,19 +57,19 @@ contract WinMeStore is Ownable {
     function winMeTokenAmount(uint256 amountETH) public view returns (uint256) {
         //Sent amountETH, how many usd I have
         uint256 ethUsd = uint256(getChainlinkDataFeedLatestAnswer());       //with 8 decimal places
-        uint256 amountUSD = amountETH * ethUsd / 10**18; //ETH = 18 decimal places
-        uint256 amountToken = amountUSD / winMeTokenPrice / 10**(8/2);  //8 decimal places from ETHUSD / 2 decimal places from token 
+        uint256 amountUSD = amountETH * ethUsd / 10E18; //ETH = 18 decimal places
+        uint256 amountToken = amountUSD / winMeTokenPrice * 10E18;  //8 decimal places from ETHUSD / 2 decimal places from token 
         return amountToken;
     }
 
     // needs some love
-    function winMeNftEthPrice(uint256 amountETH) public view returns (uint256) {
-        //Sent amountETH, how many usd I have
-        uint256 ethUsd = uint256(getChainlinkDataFeedLatestAnswer());       //with 8 decimal places
-        uint256 amountUSD = amountETH * ethUsd / 10**18; //ETH = 18 decimal places
-        uint256 amountToken = amountUSD / winMeTokenPrice / 10**(8/2);  //8 decimal places from ETHUSD / 2 decimal places from token 
-        return amountToken;
-    }
+    // function winMeNftEthPrice(uint256 amountETH) public view returns (uint256) {
+    //     //Sent amountETH, how many usd I have
+    //     uint256 ethUsd = uint256(getChainlinkDataFeedLatestAnswer());       //with 8 decimal places
+    //     uint256 amountUSD = amountETH * ethUsd / 10**18; //ETH = 18 decimal places
+    //     uint256 amountToken = amountUSD / winMeTokenPrice / 10**(8/2);  //8 decimal places from ETHUSD / 2 decimal places from token 
+    //     return amountToken;
+    // }
 
     /// @notice a function to purchase WinMeToken with ETH
     /// @notice watch out for reentrancy attacks
