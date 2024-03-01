@@ -21,6 +21,8 @@ async function deployTokenFixture() {
     ]);
     await store.waitForDeployment();
 
+    await token.grantMinterRole(store.target);
+
     const link = await ethers.getContractAt("ILINK", "0x514910771AF9Ca656af840dff83E8264EcF986CA");
     const luckyLinkHolder = "0x8B3Ce9e912d26f8a3dae6d8607384c73B4C267e9";
     await impersonateAccount(luckyLinkHolder);
