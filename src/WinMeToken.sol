@@ -16,5 +16,9 @@ contract WinMeToken is ERC20, AccessControl, Ownable {
     function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
         _mint(to, amount);
     }
+
+    function grantMinterRole(address minter) external onlyOwner {
+        _grantRole(MINTER_ROLE, minter);
+    }
 }
 
