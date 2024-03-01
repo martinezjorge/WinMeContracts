@@ -5,7 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
-contract WinMeTokenClaim is Ownable {
+contract WinMeTokenEscrow is Ownable {
     uint256 public number;
     using SafeERC20 for IERC20Permit;
     mapping(address => bool) public approvedTokens;
@@ -16,7 +16,11 @@ contract WinMeTokenClaim is Ownable {
     constructor() Ownable(msg.sender) {}
 
     /// @notice Allows users to pay game entry fee
-    function payGameEntranceFee() external {}
+    function payGameEntranceFee(
+        
+    ) external {
+
+    }
 
     /// @notice Lets players claim ERC20 tokens (doesn't require pre-approval)
     function claimTokenWithPermit() external {}
