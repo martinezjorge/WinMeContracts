@@ -8,7 +8,7 @@ async function deployTokenFixture() {
     const [owner, addr1, addr2, addr3, addr4, addr5, addr6, treasury] =
     await ethers.getSigners();
 
-    const token = await ethers.deployContract("WinMeToken", []);
+    const token = await ethers.deployContract("WinMeToken");
     await token.waitForDeployment();
 
     const ethUsdAddress = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
@@ -30,14 +30,13 @@ async function deployTokenFixture() {
     const linkHolder = await ethers.getImpersonatedSigner(luckyLinkHolder);
     await link.connect(linkHolder).transfer(store.target, ethers.parseEther("500"));
 
-
     const tetherAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-    const tetherHolderAddress = "0x4Ee7bBc295A090aD0F6db12fe7eE4dC8de896400";
-
     const usdt = await ethers.getContractAt("IUSDT", tetherAddress);
+    const tetherHolderAddress = "0x4Ee7bBc295A090aD0F6db12fe7eE4dC8de896400";
     await impersonateAccount(tetherHolderAddress);
+    await setBalance(tetherHolderAddress, ethers.parseEther("10"));
     const usdtHolder = await ethers.getImpersonatedSigner(tetherHolderAddress);
-    usdt.connect(usdtHolder).transfer(owner, ethers.utils.formatEthers("500", "gwei"));
+    await usdt.connect(usdtHolder).transfer(addr1, ethers.parseUnits("500", "mwei"));
 
     return {
         token,
