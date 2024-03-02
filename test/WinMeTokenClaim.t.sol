@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {WinMeTokenClaim} from "../src/WinMeTokenClaim.sol";
+import {WinMeTokenEscrow} from "../src/WinMeEscrow.sol";
 
 contract CounterTest is Test {
-    WinMeTokenClaim public claimContract;
+    WinMeTokenEscrow public claimContract;
 
     function setUp() public {
-        claimContract = new WinMeTokenClaim();
+        claimContract = new WinMeTokenEscrow();
     }
 
     // function test_Increment() public {

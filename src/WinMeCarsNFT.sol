@@ -11,7 +11,7 @@ contract WinMeCarsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, AccessContr
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint256 private _nextTokenId;
 
-    constructor(address minter)
+    constructor(string memory baseURI_, address minter)
         ERC721("WinMeCarsNFT", "WMC")
     {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -60,6 +60,11 @@ contract WinMeCarsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, AccessContr
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "kjlkh";
+        return "https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/";
+    }
+
+    // ADMIN functions
+    function grantMinterRole(address minter) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _grantRole(MINTER_ROLE, minter);
     }
 }

@@ -9,7 +9,7 @@ const {
   const moment = require("moment");
   const { deployTokenFixture } = require("../common/test-common");
   
-  describe("GeoJamEscrow-newEscrowViaBuyer", function () {
+  describe("WinMeStore-purchaseWinMeTokenWithNetworkCurrency", function () {
     describe("Approved Transactions", function () {
       it("WinMeStore should have a link balance", async function () {
         const {
@@ -27,10 +27,10 @@ const {
           token,
           store,
           link,
-          others: { treasury, addr3 },
+          others: { addr1 },
         } = await loadFixture(deployTokenFixture);
-        await store.connect(addr3).purchaseWinMeTokenWithNetworkCurrency({value: ethers.parseEther("1")});
-        const userWinMeBalance = await token.balanceOf(addr3.address);
+        await store.connect(addr1).purchaseWinMeTokenWithNetworkCurrency({value: ethers.parseEther("1")});
+        const userWinMeBalance = await token.balanceOf(addr1.address);
         console.log(ethers.formatEther(userWinMeBalance));
       });
     });
