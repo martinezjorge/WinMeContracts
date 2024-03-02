@@ -5,7 +5,7 @@ const {
 } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 
 async function deployTokenFixture() {
-    const [owner, treasury, addr2, addr3, addr4, addr5, addr6, addr7] =
+    const [owner, addr1, addr2, addr3, addr4, addr5, addr6, treasury] =
     await ethers.getSigners();
 
     const token = await ethers.deployContract("WinMeToken", []);
@@ -30,19 +30,29 @@ async function deployTokenFixture() {
     const linkHolder = await ethers.getImpersonatedSigner(luckyLinkHolder);
     await link.connect(linkHolder).transfer(store.target, ethers.parseEther("500"));
 
+
+    const tetherAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+    const tetherHolderAddress = "0x4Ee7bBc295A090aD0F6db12fe7eE4dC8de896400";
+
+    const usdt = await ethers.getContractAt("IUSDT", tetherAddress);
+    await impersonateAccount(tetherHolderAddress);
+    const usdtHolder = await ethers.getImpersonatedSigner(tetherHolderAddress);
+    usdt.connect(usdtHolder).transfer(owner, ethers.utils.formatEthers("500", "gwei"));
+
     return {
         token,
         store,
         link,
+        usdt,
         owner,
         others: {
-            treasury,
+            addr1,
             addr2,
             addr3,
             addr4,
             addr5,
             addr6,
-            addr7,
+            treasury,
         },
     };
 }
