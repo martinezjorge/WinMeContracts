@@ -7,12 +7,14 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IAggregatorV3} from "src/interfaces/IAggregatorV3.sol";
 import {IWinMeToken} from "src/interfaces/IWinMeToken.sol";
+import "forge-std/console.sol";
 
 /// @notice You should always use SafeERC20 to transfer ERC20 tokens
 contract WinMeStore is Ownable {
     using SafeERC20 for IERC20;
 
     IWinMeToken winMeToken;
+    IERC721 winMeNft;
     IAggregatorV3 priceFeed;
 
     address payable treasury;
@@ -35,12 +37,20 @@ contract WinMeStore is Ownable {
         uint256 indexed winMeTokenReceived
     );
 
+    event WinMeTokenPurchasedWithStableCoin(
+        address indexed stableCoint,
+        uint256 indexed stableCoinAmount,
+        uint256 indexed winMeTokenReceived
+    );
+
     constructor(
         address payable _treasuryAddress, 
-        IWinMeToken _winMeTokenAddress, 
+        IWinMeToken _winMeTokenAddress,
+        // IERC721 _winMeNft,
         IAggregatorV3 _aggregatorAddress
     ) Ownable(msg.sender) {
         winMeToken = _winMeTokenAddress;
+        // winMeNft = _winMeNft;
         priceFeed = _aggregatorAddress;
         treasury = _treasuryAddress;
     }
@@ -69,35 +79,36 @@ contract WinMeStore is Ownable {
         return amountToken;
     }
 
-    // needs some love
-    // function winMeNftEthPrice(uint256 amountETH) public view returns (uint256) {
-    //     //Sent amountETH, how many usd I have
-    //     uint256 ethUsd = uint256(getChainlinkDataFeedLatestAnswer());       //with 8 decimal places
-    //     uint256 amountUSD = amountETH * ethUsd / 10**18; //ETH = 18 decimal places
-    //     uint256 amountToken = amountUSD / winMeTokenPrice / 10**(8/2);  //8 decimal places from ETHUSD / 2 decimal places from token 
-    //     return amountToken;
-    // }
-
     /// @notice a function to purchase WinMeToken with ETH
     /// @notice watch out for reentrancy attacks
     /// @notice on arbitrum this will be ARB, on optimism OP, on Polygon MATIC
     function purchaseWinMeTokenWithNetworkCurrency() external payable {
+        require(msg.value > 0, "Ether value greatar than zero required!");
         uint256 amountToken = winMeTokenAmount(msg.value);
+        payable(treasury).transfer(msg.value);
         winMeToken.mint(msg.sender, amountToken);
     }
 
-    // Needs some love
-    function purchaseWinMeNftWithNetworkCurrency() external payable {
-        // uint256 amountToken = tokenAmount(msg.value);
-        // winMeNft.mint(msg.sender, amountToken);
+    /// @notice should allow users to purchase WinMe token
+    function purchaseWinMeTokenWithStableCoin(IERC20 paymentToken, uint256 paymentAmount) external {
+        TokenRegistry memory registry = paymentTokens[paymentToken];
+        require(registry.active, "This payment token is not active");
+        paymentToken.safeTransferFrom(msg.sender, address(treasury), paymentAmount);
+        uint256 _winMeTokenAmount = paymentAmount * 1E8 * 1E18 / 1**registry.decimals / winMeTokenPrice;
+        winMeToken.mint(msg.sender, _winMeTokenAmount);
+        emit WinMeTokenPurchasedWithStableCoin(address(paymentToken), paymentAmount, _winMeTokenAmount);
     }
 
-    /// @notice should allow users to purchase WinMe token with USDT
-    function purchaseWinMeTokenWithERC20(IERC20 _tokenAddress) external {}
+    function purchaseWinMeNftWithWinMeToken() external {
+        winMeToken.transferFrom(msg.sender, treasury, 20E18);
+        // emit an event
+    }
 
-    function purchaseWinMeNftWithERC20() external {}
+    // ADMIN FUNCTIONS //
 
-    // ADMIN FUNCTIONS
+    function setTokenInRegistry(IERC20 token, uint256 decimals, bool approved) external onlyOwner {
+        paymentTokens[token] = TokenRegistry(decimals, approved);
+    }
 
     function setWinMeTokenPrice(uint256 _newWinMeTokenPrice) external onlyOwner {
         winMeTokenPrice = _newWinMeTokenPrice;
