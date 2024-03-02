@@ -1,0 +1,16 @@
+{
+    "name": "Missile Car",
+    "description": "A dangerous car at long distances",
+    "image": "https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/2.jpg",
+    "attributes": [
+        {
+            "trait_type": "background",
+            "value": "Opacity"
+        },
+        {
+            "trait_type": "car",
+            "value": "missile"
+        }
+    ],
+    "edition": 2
+}

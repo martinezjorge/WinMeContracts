@@ -1,0 +1,16 @@
+{
+    "name": "Blue Lightning",
+    "description": "What could this do?",
+    "image": "https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/3.jpg",
+    "attributes": [
+        {
+            "trait_type": "background",
+            "value": "Opacity"
+        },
+        {
+            "trait_type": "essence",
+            "value": "lightning"
+        }
+    ],
+    "edition": 3
+}

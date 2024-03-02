@@ -1,0 +1,16 @@
+{
+    "name": "Badass Blue Car",
+    "description": "A very fast car",
+    "image": "https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/1.jpg",
+    "attributes": [
+        {
+            "trait_type": "background",
+            "value": "Opacity"
+        },
+        {
+            "trait_type": "car",
+            "value": "badass"
+        }
+    ],
+    "edition": 1
+}

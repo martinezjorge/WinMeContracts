@@ -1,0 +1,16 @@
+{
+    "name": "Blue Car",
+    "description": "A blue race car broom broom",
+    "image": "https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/0.jpg",
+    "attributes": [
+        {
+            "trait_type": "background",
+            "value": "Opacity"
+        },
+        {
+            "trait_type": "car",
+            "value": "blue"
+        }
+    ],
+    "edition": 0
+}
