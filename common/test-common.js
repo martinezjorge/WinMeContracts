@@ -14,14 +14,19 @@ async function deployTokenFixture() {
     const ethUsdAddress = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
     await impersonateAccount(ethUsdAddress);
 
+    const nft = await ethers.deployContract("WinMeKarts", ["https://ethdenver-nft-images.s3.us-west-2.amazonaws.com/tokens/", treasury.address]);
+    await nft.waitForDeployment();
+
     const store = await ethers.deployContract("WinMeStore", [
         treasury.address,
         token.target,
+        nft.target,
         ethUsdAddress
     ]);
     await store.waitForDeployment();
-
+    await nft.transferOwnership(store.target);
     await token.grantMinterRole(store.target);
+
 
     const link = await ethers.getContractAt("ILINK", "0x514910771AF9Ca656af840dff83E8264EcF986CA");
     const luckyLinkHolder = "0x8B3Ce9e912d26f8a3dae6d8607384c73B4C267e9";
@@ -41,6 +46,7 @@ async function deployTokenFixture() {
     return {
         token,
         store,
+        nft,
         link,
         usdt,
         owner,

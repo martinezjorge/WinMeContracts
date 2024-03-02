@@ -9,12 +9,16 @@ import {IAggregatorV3} from "src/interfaces/IAggregatorV3.sol";
 import {IWinMeToken} from "src/interfaces/IWinMeToken.sol";
 import "forge-std/console.sol";
 
+interface IWinMeKarts {
+    function mintNft(address _to) external;
+}
+
 /// @notice You should always use SafeERC20 to transfer ERC20 tokens
 contract WinMeStore is Ownable {
     using SafeERC20 for IERC20;
 
     IWinMeToken winMeToken;
-    IERC721 winMeNft;
+    IWinMeKarts winMeNft;
     IAggregatorV3 priceFeed;
 
     address payable treasury;
@@ -38,19 +42,23 @@ contract WinMeStore is Ownable {
     );
 
     event WinMeTokenPurchasedWithStableCoin(
-        address indexed stableCoint,
+        address indexed stableCoin,
         uint256 indexed stableCoinAmount,
         uint256 indexed winMeTokenReceived
+    );
+
+    event NftPurchasedWithWinMeToken(
+        uint256 indexed winMeTokenAmount
     );
 
     constructor(
         address payable _treasuryAddress, 
         IWinMeToken _winMeTokenAddress,
-        // IERC721 _winMeNft,
+        IWinMeKarts _winMeNft,
         IAggregatorV3 _aggregatorAddress
     ) Ownable(msg.sender) {
         winMeToken = _winMeTokenAddress;
-        // winMeNft = _winMeNft;
+        winMeNft = _winMeNft;
         priceFeed = _aggregatorAddress;
         treasury = _treasuryAddress;
     }
@@ -81,7 +89,6 @@ contract WinMeStore is Ownable {
 
     /// @notice a function to purchase WinMeToken with ETH
     /// @notice watch out for reentrancy attacks
-    /// @notice on arbitrum this will be ARB, on optimism OP, on Polygon MATIC
     function purchaseWinMeTokenWithNetworkCurrency() external payable {
         require(msg.value > 0, "Ether value greatar than zero required!");
         uint256 amountToken = winMeTokenAmount(msg.value);
@@ -101,7 +108,8 @@ contract WinMeStore is Ownable {
 
     function purchaseWinMeNftWithWinMeToken() external {
         winMeToken.transferFrom(msg.sender, treasury, 20E18);
-        // emit an event
+        winMeNft.mintNft(msg.sender);
+        emit NftPurchasedWithWinMeToken(20E18);
     }
 
     // ADMIN FUNCTIONS //
